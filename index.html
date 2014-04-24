@@ -1,0 +1,161 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+  <title>Music Globe</title>
+  <meta charset="utf-8">
+  <style type="text/css">
+    html {
+      height: 100%;
+    }
+    body {
+      margin: 0;
+      padding: 0;
+      background: #000000 url(loading.gif) center center no-repeat;
+      color: #ffffff;
+      font-family: sans-serif;
+      font-size: 13px;
+      line-height: 20px;
+      height: 100%;
+    }
+
+    #info {
+
+      font-size: 11px;
+      position: absolute;
+      bottom: 5px;
+      background-color: rgba(0,0,0,0.8);
+      border-radius: 3px;
+      right: 10px;
+      padding: 10px;
+
+    }
+
+    #currentInfo {
+      width: 270px;
+      position: absolute;
+      left: 20px;
+      top: 63px;
+
+      background-color: rgba(0,0,0,0.2);
+
+      border-top: 1px solid rgba(255,255,255,0.4);
+      padding: 10px;
+    }
+
+    a {
+      color: #aaa;
+      text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+
+    .bull {
+      padding: 0 5px;
+      color: #555;
+    }
+
+    #title {
+      position: absolute;
+      top: 20px;
+      width: 270px;
+      left: 20px;
+      background-color: rgba(0,0,0,0.2);
+      border-radius: 3px;
+      font: 20px Georgia;
+      padding: 10px;
+    }
+
+    .type {
+      font: 16px Georgia;
+      line-height: 26px;
+      height: 30px;
+      text-align: center;
+      float: left;
+      width: 90px;
+      color: rgba(255, 255, 255, 0.4);
+
+      cursor: pointer;
+      -webkit-transition: all 0.1s ease-out;
+    }
+
+    .type:hover, .type.active {
+      font-size: 23px;
+      color: #fff;
+    }
+
+    #ce span {
+      display: none;
+    }
+
+    #ce {
+      width: 107px;
+      height: 55px;
+      display: block;
+      position: absolute;
+      bottom: 15px;
+      left: 20px;
+      background: url(ce.png);
+    }
+
+
+  </style>
+</head>
+<body>
+
+  <div id="container"></div>
+
+  <div id="info">
+    <strong>Based on <a href="http://www.chromeexperiments.com/globe">WebGL Globe</a></strong> <span class="bull">&bull;</span> Data from bandsintown API</a>
+  </div>
+
+  <div id="currentInfo">
+    <span id="upcoming" class="type">upcoming</span>
+    <span id="past" class="type">past</span>
+    <span id="all" class="type">all</span>
+  </div>
+
+  <div id="title">
+    Artist events locations (past and upcoming)
+  </div>
+
+  <a id="ce" href="http://www.chromeexperiments.com/globe">
+    <span>This is a Chrome Experiment</span>
+  </a>
+
+  <script type="text/javascript" src="lib/Detector.js"></script>
+  <script type="text/javascript" src="lib/three.min.js"></script>
+  <script type="text/javascript" src="lib/Tween.js"></script>
+  <script type="text/javascript" src="lib/jquery-2.1.0.min.js"></script>
+  <script type="text/javascript" src="globe.js"></script>
+  <script type="text/javascript">
+
+    if(!Detector.webgl){
+      Detector.addGetWebGLMessage();
+    } else {
+
+      var container = document.getElementById('container');
+      var globe = new DAT.Globe(container);
+
+      var url = 'http://api.bandsintown.com/artists/Skrillex/events.json?api_version=2.0&app_id=YOUR_APP_ID&date=all';
+      $.get(url, {}, function (data) {
+        var globeDataLL = [];
+        for (var i = 0; i < data.length; i++) {
+        	var venue = data[i].venue;
+        	globeDataLL = globeDataLL.concat([parseFloat(venue.latitude), parseFloat(venue.longitude), 0.1]);
+        }
+
+        globe.addData(globeDataLL, {format: 'magnitude'});
+
+        globe.createPoints();
+        globe.animate();
+
+      }, 'jsonp');
+
+    }
+
+  </script>
+
+</body>
+
+</html>
