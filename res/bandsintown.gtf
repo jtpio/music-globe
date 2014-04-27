@@ -1,0 +1,122 @@
+{
+	"garglSchemaVersion": "1.0",
+	"moduleVersion": "1.0",
+	"moduleName": "bandsintown",
+	"moduleDescription": "",
+	"functions": [
+		{
+			"request": {
+				"method": "GET",
+				"url": "http://www.bandsintown.com/artist/search",
+				"httpVersion": "HTTP/1.1",
+				"headers": [
+					{
+						"description": "",
+						"name": "Pragma",
+						"value": "no-cache"
+					},
+					{
+						"description": "",
+						"name": "DNT",
+						"value": "1"
+					},
+					{
+						"description": "",
+						"name": "Accept-Encoding",
+						"value": "gzip,deflate,sdch"
+					},
+					{
+						"description": "",
+						"name": "Host",
+						"value": "www.bandsintown.com"
+					},
+					{
+						"description": "",
+						"name": "Accept-Language",
+						"value": "en-US,en;q=0.8,fr;q=0.6"
+					},
+					{
+						"description": "",
+						"name": "User-Agent",
+						"value": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/34.0.1847.116 Safari/537.36"
+					},
+					{
+						"description": "",
+						"name": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"description": "",
+						"name": "Accept",
+						"value": "application/json, text/javascript, */*; q=0.01"
+					},
+					{
+						"description": "",
+						"name": "Cache-Control",
+						"value": "no-cache"
+					},
+					{
+						"description": "",
+						"name": "X-Requested-With",
+						"value": "XMLHttpRequest"
+					},
+					{
+						"description": "",
+						"name": "Connection",
+						"value": "keep-alive"
+					},
+					{
+						"description": "",
+						"name": "Referer",
+						"value": "http://www.bandsintown.com/home"
+					}
+				],
+				"queryString": [
+					{
+						"description": "",
+						"name": "name",
+						"value": "@artist@"
+					}
+				]
+			},
+			"response": {
+				"headers": [
+					{
+						"name": "X-Runtime"
+					},
+					{
+						"name": "Date"
+					},
+					{
+						"name": "Server"
+					},
+					{
+						"name": "ETag"
+					},
+					{
+						"name": "Content-Type"
+					},
+					{
+						"name": "Status"
+					},
+					{
+						"name": "Cache-Control"
+					},
+					{
+						"name": "Connection"
+					},
+					{
+						"name": "Content-Length"
+					},
+					{
+						"name": "X-UA-Compatible"
+					}
+				],
+				"fields": []
+			},
+			"connection": "61805",
+			"functionName": "SearchArtist",
+			"functionDescription": ""
+		}
+	]
+}
