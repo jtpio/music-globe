@@ -37,9 +37,16 @@ a:hover {
   color: #555;
 }
 
-#title {
+#tray {
   position: absolute;
   top: 20px;
+  left: 20px;
+  z-index: 10;
+}
+
+#title {
+  position: absolute;
+  top: 40px;
   width: 300px;
   left: 20px;
   border-radius: 3px;

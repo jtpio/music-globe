@@ -15,6 +15,10 @@
   </div>
 
 
+  <button id="tray" type="button" class="btn btn-default btn-xs">
+    <span class="glyphicon glyphicon-th-list"></span>
+  </button>
+
   <div id="title">
     <div class="input-group">
       <input id="artistName" type="text" class="form-control" placeholder="Artist">
@@ -105,6 +109,7 @@
             globe.createPoints();
 
             $('#infos').fadeIn();
+            $('#artists').hide();
 
           }, 'jsonp');
 
@@ -119,7 +124,7 @@
 
       $('#infos').fadeOut();
       $('#artists').fadeOut();
-      var url = 'http://musicbrainz.org/ws/2/artist/?query=artist:' + query + '&fmt=json&limit=15'
+      var url = 'http://musicbrainz.org/ws/2/artist/?query=artist:' + query + '*&fmt=json&limit=15'
       $.get(url, {}, function (data) {
         data = data.artist;
         var suggest = "";
@@ -127,6 +132,7 @@
           var a = data[i];
           suggest += '<a href="javascript:fetchData(\'' + a.id + '\', \'' + a.name + '\');" class="list-group-item">' + a.name + '</a>';
         }
+        $('#infos').hide();
         $('#artists').html(suggest).fadeIn();
       });
     }
@@ -150,7 +156,7 @@
         search();
       } else {
         clearTimeout(timer);
-        timer = setTimeout(search, 1000);
+        timer = setTimeout(search, 500);
       }
     });
 
@@ -161,6 +167,10 @@
     $('a[href="#raw"]').click(function () {
       var name = $("#artistName").val();
       fetchData(null, name, name);
+    });
+
+    $('#tray').click(function () {
+      $('#title').toggle(200);
     });
 
     globe.animate();
