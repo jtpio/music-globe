@@ -18,9 +18,13 @@
   <div id="title">
     <div class="input-group">
       <input id="artistName" type="text" class="form-control" placeholder="Artist">
-      <span class="input-group-btn">
-        <button id="searchBtn" class="btn btn-default" type="button">Search</button>
-      </span>
+      <div class="input-group-btn">
+        <button id="searchBtn" class="btn btn-primary" type="button">Search</button>
+        <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>
+        <ul class="dropdown-menu pull-right">
+          <li><a href="#">Raw search on Bandsintown</a></li>
+        </ul>
+      </div>
     </div>
 
 
@@ -47,7 +51,7 @@
       var container = document.getElementById('container');
       var globe = new DAT.Globe(container);
 
-      function fetchData(mbid) {
+      function fetchData(mbid, name) {
         // var url = 'http://api.bandsintown.com/artists/' + artist + '/events.json?api_version=2.0&app_id=YOUR_APP_ID&date=all';
         var url = 'http://api.bandsintown.com/artists/mbid_' + mbid + '/events.json?api_version=2.0&app_id=YOUR_APP_ID&date=all';
         $.get(url, {}, function (data) {
@@ -72,10 +76,10 @@
           $('#top10').empty();
           var topHtml = '';
           for (var i = 0; i < 10 && i < top.length; i++) {
-            topHtml += '<li class="list-group-item"> <span class="badge">' + top[i].n + '</span> ' + top[i].city + ' </li>';
+            topHtml += '<li class="list-group-item"> <span class="badge alert-success">' + top[i].n + '</span> ' + top[i].city + ' </li>';
           }
 
-          $('#artist').html(artist);
+          $('#artist').html(name);
           $('#top10').append(topHtml);
 
 
@@ -104,7 +108,7 @@
         var suggest = "";
         for (var i = 0; i < 10 && i < data.length; i++) {
           var a = data[i];
-          suggest += '<a href="javascript:fetchData(\'' + a.id + '\');" class="list-group-item">' + a.name + '</a>';
+          suggest += '<a href="javascript:fetchData(\'' + a.id + '\', \'' + a.name + '\');" class="list-group-item">' + a.name + '</a>';
         }
         $('#artists').html(suggest).fadeIn();
       });
@@ -120,7 +124,7 @@
       search();
     });
 
-    $('artistName').keyup(function (e) {
+    $('#artistName').keyup(function (e) {
       if (e.keyCode === 13) {
         search()
       }

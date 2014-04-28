@@ -40,7 +40,7 @@ a:hover {
 #title {
   position: absolute;
   top: 20px;
-  width: 200px;
+  width: 300px;
   left: 20px;
   border-radius: 3px;
   padding: 10px;
@@ -50,4 +50,8 @@ a:hover {
 
 #infos, #artists {
   margin-top: 10px;
+}
+
+#artist {
+  color: #ffffff;
 }
