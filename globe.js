@@ -396,10 +396,16 @@ DAT.Globe = function(container, opts) {
     this._time = t;
   });
 
+  function reset() {
+    scene.remove(this.points);
+    this.points = null;
+  }
+
   this.addData = addData;
   this.createPoints = createPoints;
   this.renderer = renderer;
   this.scene = scene;
+  this.reset = reset;
 
   return this;
 

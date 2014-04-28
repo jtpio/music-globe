@@ -24,16 +24,6 @@ body {
 
 }
 
-#currentInfo {
-  width: 270px;
-  position: absolute;
-  left: 20px;
-  top: 63px;
-  background-color: rgba(0,0,0,0.2);
-  border-top: 1px solid rgba(255,255,255,0.4);
-  padding: 10px;
-}
-
 a {
   color: #aaa;
   text-decoration: none;
@@ -50,15 +40,14 @@ a:hover {
 #title {
   position: absolute;
   top: 20px;
-  width: 270px;
+  width: 200px;
   left: 20px;
-  background-color: rgba(0,0,0,0.2);
   border-radius: 3px;
   padding: 10px;
   z-index: 10;
+  color: black;
 }
 
-.type:hover, .type.active {
-  font-size: 23px;
-  color: #fff;
+#top10 {
+  margin-top: 10px;
 }

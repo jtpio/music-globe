@@ -15,11 +15,16 @@
   </div>
 
 
-  <div id="title" class="input-group">
-    <input id="artistName" type="text" class="form-control" placeholder="Artist">
-    <span class="input-group-btn">
-      <button id="searchBtn" class="btn btn-default" type="button">Search</button>
-    </span>
+  <div id="title">
+    <div class="input-group">
+      <input id="artistName" type="text" class="form-control" placeholder="Artist">
+      <span class="input-group-btn">
+        <button id="searchBtn" class="btn btn-default" type="button">Search</button>
+      </span>
+    </div>
+
+    <ul id="top10" class="list-group"></ul>
+
   </div>
 
   <script type="text/javascript" src="lib/Detector.js"></script>
@@ -50,8 +55,18 @@
             cities[data[i].venue.city] += 1;
           }
 
-          var max = _.max(Object.keys(cities).map(function(c) { return {city: c, n: cities[c]}; }), function (e) { return e.n});
-          var scale = 1 / max.n;
+          var top = Object.keys(cities).map(function(c) { return {city: c, n: cities[c]}; }).sort(function (a, b) {
+            return b.n - a.n;
+          });
+          var scale = 1 / top[0].n;
+
+          $('#top10').empty();
+          var topHtml = '';
+          for (var i = 0; i < 10 && i < top.length; i++) {
+            topHtml += '<li class="list-group-item"> <span class="badge">' + top[i].n + '</span> ' + top[i].city + ' </li>';
+          }
+
+          $('#top10').append(topHtml);
 
           if (max.n === 0) return;
 
@@ -62,6 +77,7 @@
 
           globe.addData(globeDataLL, {format: 'magnitude'});
           globe.createPoints();
+          $('#top10').fadeIn();
 
         }, 'jsonp');
       }
@@ -69,7 +85,8 @@
 
     $("#searchBtn").click(function () {
       var name = $("#artistName").val();
-      globe.addData([], {format: 'magnitude'});
+      globe.reset();
+      $('#top10').fadeOut();
       fetchData(name);
     });
 
