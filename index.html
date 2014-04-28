@@ -22,7 +22,7 @@
         <button id="searchBtn" class="btn btn-primary" type="button">Search</button>
         <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>
         <ul class="dropdown-menu pull-right">
-          <li><a href="#">Raw search on Bandsintown</a></li>
+          <li><a href="#raw">Raw search on Bandsintown</a></li>
         </ul>
       </div>
     </div>
@@ -51,9 +51,13 @@
       var container = document.getElementById('container');
       var globe = new DAT.Globe(container);
 
-      function fetchData(mbid, name) {
+      function fetchData(mbid, name, rawName) {
         // var url = 'http://api.bandsintown.com/artists/' + artist + '/events.json?api_version=2.0&app_id=YOUR_APP_ID&date=all';
         var url = 'http://api.bandsintown.com/artists/mbid_' + mbid + '/events.json?api_version=2.0&app_id=YOUR_APP_ID&date=all';
+        if (rawName) {
+          url = 'http://api.bandsintown.com/artists/' + rawName + '/events.json?api_version=2.0&app_id=YOUR_APP_ID&date=all';
+        }
+
         $.get(url, {}, function (data) {
           console.log(data);
           var globeDataLL = [];
@@ -102,7 +106,7 @@
     function fetchArtists(query) {
       $('#infos').fadeOut();
       $('#artists').fadeOut();
-      var url = 'http://musicbrainz.org/ws/2/artist/?query=artist:' + query + '&fmt=json'
+      var url = 'http://musicbrainz.org/ws/2/artist/?query=artist:' + query + '&fmt=json&limit=15'
       $.get(url, {}, function (data) {
         data = data.artist;
         var suggest = "";
@@ -120,15 +124,30 @@
       globe.reset();
     }
 
+    // inputs
+    var timer;
     $('#searchBtn').click(function () {
       search();
     });
 
     $('#artistName').keyup(function (e) {
+
       if (e.keyCode === 13) {
-        search()
+        search();
+      } else {
+        clearTimeout(timer);
+        timer = setTimeout(search, 1000);
       }
-  });
+    });
+
+    $('#artistName').keydown(function () {
+      clearTimeout(timer);
+    });
+
+    $('a[href="#raw"]').click(function () {
+      var name = $("#artistName").val();
+      fetchData(null, name, name);
+    });
 
     globe.animate();
 
