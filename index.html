@@ -23,7 +23,13 @@
       </span>
     </div>
 
-    <ul id="top10" class="list-group"></ul>
+
+    <div id="infos">
+      <h2 id="artist"> </h2>
+      <ul id="top10" class="list-group"></ul>
+    </div>
+
+    <div id="artists" class="list-group"><div>
 
   </div>
 
@@ -41,9 +47,11 @@
       var container = document.getElementById('container');
       var globe = new DAT.Globe(container);
 
-      function fetchData(artist) {
-        var url = 'http://api.bandsintown.com/artists/' + artist + '/events.json?api_version=2.0&app_id=YOUR_APP_ID&date=all';
+      function fetchData(mbid) {
+        // var url = 'http://api.bandsintown.com/artists/' + artist + '/events.json?api_version=2.0&app_id=YOUR_APP_ID&date=all';
+        var url = 'http://api.bandsintown.com/artists/mbid_' + mbid + '/events.json?api_version=2.0&app_id=YOUR_APP_ID&date=all';
         $.get(url, {}, function (data) {
+          console.log(data);
           var globeDataLL = [];
           var cities = {};
           // first pass
@@ -58,6 +66,7 @@
           var top = Object.keys(cities).map(function(c) { return {city: c, n: cities[c]}; }).sort(function (a, b) {
             return b.n - a.n;
           });
+          if (top.length === 0 || top[0].n === 0) return;
           var scale = 1 / top[0].n;
 
           $('#top10').empty();
@@ -66,9 +75,9 @@
             topHtml += '<li class="list-group-item"> <span class="badge">' + top[i].n + '</span> ' + top[i].city + ' </li>';
           }
 
+          $('#artist').html(artist);
           $('#top10').append(topHtml);
 
-          if (max.n === 0) return;
 
           for (var i = 0; i < data.length; i++) {
           	var venue = data[i].venue;
@@ -77,21 +86,47 @@
 
           globe.addData(globeDataLL, {format: 'magnitude'});
           globe.createPoints();
-          $('#top10').fadeIn();
+
+          $('#artists').fadeOut(500, function () {
+            $('#infos').fadeIn();
+          });
 
         }, 'jsonp');
       }
     }
 
-    $("#searchBtn").click(function () {
+    function fetchArtists(query) {
+      $('#infos').fadeOut();
+      $('#artists').fadeOut();
+      var url = 'http://musicbrainz.org/ws/2/artist/?query=artist:' + query + '&fmt=json'
+      $.get(url, {}, function (data) {
+        data = data.artist;
+        var suggest = "";
+        for (var i = 0; i < 10 && i < data.length; i++) {
+          var a = data[i];
+          suggest += '<a href="javascript:fetchData(\'' + a.id + '\');" class="list-group-item">' + a.name + '</a>';
+        }
+        $('#artists').html(suggest).fadeIn();
+      });
+    }
+
+    function search() {
       var name = $("#artistName").val();
+      fetchArtists(name);
       globe.reset();
-      $('#top10').fadeOut();
-      fetchData(name);
+    }
+
+    $('#searchBtn').click(function () {
+      search();
     });
 
+    $('artistName').keyup(function (e) {
+      if (e.keyCode === 13) {
+        search()
+      }
+  });
 
-     globe.animate();
+    globe.animate();
 
   </script>
 
