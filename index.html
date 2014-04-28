@@ -11,7 +11,7 @@
   <div id="container"></div>
 
   <div id="info">
-    <strong>Based on <a href="http://www.chromeexperiments.com/globe">WebGL Globe</a></strong> <span class="bull">&bull;</span> Data from bandsintown API</a>
+    <a href="https://github.com/jtuloup" > Jeremy Tuloup </a> <span class="bull">&bull;</span> Powered by <a href="http://www.chromeexperiments.com/globe">WebGL Globe</a> <span class="bull">&bull;</span> Data from <a href="http://www.bandsintown.com/api/overview"> Bandsintown API V2 </a> and <a href="http://musicbrainz.org/doc/Development/XML_Web_Service/Version_2/Search"> MusicBrainz </a>
   </div>
 
 
@@ -27,6 +27,7 @@
       </div>
     </div>
 
+    <div id="error" class="alert alert-danger"></div>
 
     <div id="infos">
       <h2 id="artist"> </h2>
@@ -53,57 +54,69 @@
 
       function fetchData(mbid, name, rawName) {
         // var url = 'http://api.bandsintown.com/artists/' + artist + '/events.json?api_version=2.0&app_id=YOUR_APP_ID&date=all';
-        var url = 'http://api.bandsintown.com/artists/mbid_' + mbid + '/events.json?api_version=2.0&app_id=YOUR_APP_ID&date=all';
+        var url = 'http://api.bandsintown.com/artists/mbid_' + mbid + '/events.json?api_version=2.0&app_id=MUSIC_GLOBE&date=all';
         if (rawName) {
-          url = 'http://api.bandsintown.com/artists/' + rawName + '/events.json?api_version=2.0&app_id=YOUR_APP_ID&date=all';
+          url = 'http://api.bandsintown.com/artists/' + rawName + '/events.json?api_version=2.0&app_id=MUSIC_GLOBE&date=all';
         }
 
-        $.get(url, {}, function (data) {
-          console.log(data);
-          var globeDataLL = [];
-          var cities = {};
-          // first pass
-          for (var i = 0; i < data.length; i++) {
-            var city = data[i].venue.city;
-            if (!cities.hasOwnProperty(city)) {
-              cities[city] = 0;
+        $('#artists').fadeOut(500, function () {
+
+          $.get(url, {}, function (data) {
+            if (data.errors && data.errors[0]) {
+              $('#artists').fadeOut();
+              $('#infos').fadeOut();
+              $('#error').html('Bandsintown: ' + data.errors[0]);
+              $('#error').fadeIn();
             }
-            cities[data[i].venue.city] += 1;
-          }
 
-          var top = Object.keys(cities).map(function(c) { return {city: c, n: cities[c]}; }).sort(function (a, b) {
-            return b.n - a.n;
-          });
-          if (top.length === 0 || top[0].n === 0) return;
-          var scale = 1 / top[0].n;
+            var globeDataLL = [];
+            var cities = {};
+            // first pass
+            for (var i = 0; i < data.length; i++) {
+              var city = data[i].venue.city;
+              if (!cities.hasOwnProperty(city)) {
+                cities[city] = 0;
+              }
+              cities[data[i].venue.city] += 1;
+            }
 
-          $('#top10').empty();
-          var topHtml = '';
-          for (var i = 0; i < 10 && i < top.length; i++) {
-            topHtml += '<li class="list-group-item"> <span class="badge alert-success">' + top[i].n + '</span> ' + top[i].city + ' </li>';
-          }
+            var top = Object.keys(cities).map(function(c) { return {city: c, n: cities[c]}; }).sort(function (a, b) {
+              return b.n - a.n;
+            });
+            if (top.length === 0 || top[0].n === 0) return;
+            var scale = 1 / top[0].n;
 
-          $('#artist').html(name);
-          $('#top10').append(topHtml);
+            $('#top10').empty();
+            var topHtml = '';
+            for (var i = 0; i < 10 && i < top.length; i++) {
+              topHtml += '<li class="list-group-item"> <span class="badge alert-success">' + top[i].n + '</span> ' + top[i].city + ' </li>';
+            }
+
+            $('#artist').html(name);
+            $('#top10').append(topHtml);
 
 
-          for (var i = 0; i < data.length; i++) {
-          	var venue = data[i].venue;
-          	globeDataLL = globeDataLL.concat([parseFloat(venue.latitude), parseFloat(venue.longitude), cities[venue.city] * scale]);
-          }
+            for (var i = 0; i < data.length; i++) {
+            	var venue = data[i].venue;
+            	globeDataLL = globeDataLL.concat([parseFloat(venue.latitude), parseFloat(venue.longitude), cities[venue.city] * scale]);
+            }
 
-          globe.addData(globeDataLL, {format: 'magnitude'});
-          globe.createPoints();
+            globe.addData(globeDataLL, {format: 'magnitude'});
+            globe.createPoints();
 
-          $('#artists').fadeOut(500, function () {
             $('#infos').fadeIn();
-          });
 
-        }, 'jsonp');
+          }, 'jsonp');
+
+        });
+
       }
     }
 
     function fetchArtists(query) {
+      query = query.trim();
+      if (_.isEmpty(query)) return;
+
       $('#infos').fadeOut();
       $('#artists').fadeOut();
       var url = 'http://musicbrainz.org/ws/2/artist/?query=artist:' + query + '&fmt=json&limit=15'
@@ -119,6 +132,7 @@
     }
 
     function search() {
+      $('#error').hide();
       var name = $("#artistName").val();
       fetchArtists(name);
       globe.reset();

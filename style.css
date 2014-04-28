@@ -48,10 +48,14 @@ a:hover {
   color: black;
 }
 
-#infos, #artists {
+#infos, #artists, #error {
   margin-top: 10px;
 }
 
 #artist {
   color: #ffffff;
+}
+
+#error {
+  display: none;
 }
