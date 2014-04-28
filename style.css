@@ -66,3 +66,13 @@ a:hover {
 #error {
   display: none;
 }
+
+#description {
+  color: #ffffff;
+  position: absolute;
+  top: 0px;
+  width: 100%;
+  padding: 10px;
+  z-index:1;
+  text-align: center;
+}
