@@ -33,6 +33,14 @@
         </ul>
       </div>
     </div>
+    <div class="cbs">
+      <label class="checkbox-inline">
+        <input type="checkbox" id="past" checked> Past
+      </label>
+      <label class="checkbox-inline">
+        <input type="checkbox" id="upcoming" checked> Upcoming
+      </label>
+    </div>
 
     <div id="error" class="alert alert-danger"></div>
 
@@ -58,16 +66,35 @@
 
       var container = document.getElementById('container');
       var globe = new DAT.Globe(container);
+      var dates = ['', '2000-04-29,2014-04-29', 'upcoming', 'all'];
+      var past = 1, // 0-1
+          upcoming = 2, // 0-2
+          artistId = '';
+
+      function resetGlobe() {
+        globe.reset();
+        $('#top10').empty();
+        $('#past').attr('disabled', true);
+        $('#upcoming').attr('disabled', true);
+      }
+
+      function enableCbs() {
+        $('#past').removeAttr('disabled');
+        $('#upcoming').removeAttr('disabled');
+      }
 
       function fetchData(mbid, name, rawName) {
-        // var url = 'http://api.bandsintown.com/artists/' + artist + '/events.json?api_version=2.0&app_id=YOUR_APP_ID&date=all';
-        var url = 'http://api.bandsintown.com/artists/mbid_' + mbid + '/events.json?api_version=2.0&app_id=MUSIC_GLOBE&date=all';
-        if (rawName) {
-          url = 'http://api.bandsintown.com/artists/' + rawName + '/events.json?api_version=2.0&app_id=MUSIC_GLOBE&date=all';
+        resetGlobe();
+
+        if (mbid) artistId = mbid;
+        var date = dates[past+upcoming];
+        if ((!artistId && !rawName) || !date) {
+          enableCbs();
+          return;
         }
 
         $('#artists').fadeOut(500, function () {
-
+          var url = 'http://api.bandsintown.com/artists/' + (rawName ? rawName : 'mbid_' + artistId) + '/events.json?api_version=2.0&app_id=MUSIC_GLOBE&date=' + date;
           $.get(url, {}, function (data) {
             if (data.errors && data.errors[0]) {
               $('#artists').fadeOut();
@@ -75,6 +102,9 @@
               $('#error').html('Bandsintown: ' + data.errors[0]);
               $('#error').fadeIn();
             }
+
+            resetGlobe();
+            enableCbs();
 
             var globeDataLL = [];
             var cities = {};
@@ -93,7 +123,6 @@
             if (top.length === 0 || top[0].n === 0) return;
             var scale = 1 / top[0].n;
 
-            $('#top10').empty();
             var topHtml = '';
             for (var i = 0; i < 10 && i < top.length; i++) {
               topHtml += '<li class="list-group-item"> <span class="badge alert-success">' + top[i].n + '</span> ' + top[i].city + ' </li>';
@@ -101,7 +130,6 @@
 
             $('#artist').html(name);
             $('#top10').append(topHtml);
-
 
             for (var i = 0; i < data.length; i++) {
             	var venue = data[i].venue;
@@ -154,7 +182,6 @@
     });
 
     $('#artistName').keyup(function (e) {
-
       if (e.keyCode === 13) {
         search();
       } else {
@@ -175,6 +202,16 @@
     $('#tray').click(function () {
       $('#title').toggle(200);
       $('#description').toggle(200);
+    });
+
+    $('#past').click(function () {
+      past = this.checked ? 1 : 0;
+      fetchData();
+    });
+
+    $('#upcoming').click(function () {
+      upcoming = this.checked ? 2 : 0;
+      fetchData();
     });
 
     globe.animate();
