@@ -13,7 +13,6 @@ body {
 }
 
 #info {
-
   font-size: 11px;
   position: absolute;
   bottom: 5px;
@@ -78,7 +77,11 @@ a:hover {
 
 #top10 {
   color: #000000;
+  max-height: 400px;
+  overflow: scroll;
+  overflow-x: hidden;
 }
+
 
 .cbs {
   margin-top: 10px;
