@@ -18,7 +18,7 @@ $('#artistName').keyup(function (e) {
         search();
     } else {
         clearTimeout(timer);
-        timer = setTimeout(search, 100);
+        timer = setTimeout(search, 500);
     }
 });
 
@@ -123,18 +123,18 @@ function fetchArtists(query) {
     query = query.trim();
     if (_.isEmpty(query)) return;
 
-    $('#infos').hide();
-    $('#artists').hide();
+    $('#infos').fadeOut();
+    $('#artists').fadeOut();
     var url = 'http://musicbrainz.org/ws/2/artist/?query=artist:' + query + '*&fmt=json&limit=15';
     $.get(url, {}, function (data) {
-        data = data.artist;
+        var artist = data.artist;
         var suggest = '';
-        for (var i = 0; i < 10 && i < data.length; i++) {
-            var a = data[i];
+        for (var i = 0; i < 10 && i < artist.length; i++) {
+            var a = artist[i];
             suggest += '<a href="javascript:fetchData(\'' + a.id + '\', \'' + a.name + '\');" class="list-group-item">' + a.name + '</a>';
         }
         $('#infos').show();
-        $('#artists').html(suggest).show();
+        $('#artists').html(suggest).fadeIn();
     });
 }
 
