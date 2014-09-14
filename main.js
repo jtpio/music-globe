@@ -48,7 +48,7 @@ $('#upcoming').click(function () {
 
 function resetGlobe() {
     globe.reset();
-    $('#top10').empty();
+    $('#top10').empty().hide();
     $('#past').attr('disabled', true);
     $('#upcoming').attr('disabled', true);
 }
@@ -100,7 +100,7 @@ function fetchData(mbid, name, rawName) {
             }, '');
 
             $('#artist').html(name);
-            $('#top10').append(topHtml);
+            $('#top10').append(topHtml).show();
 
             var globeDataLL = data.reduce(function (prev, curr) {
                 var venue = curr.venue;
@@ -148,6 +148,7 @@ $(document).ready(function () {
     if(!Detector.webgl){
         Detector.addGetWebGLMessage();
     } else {
+        resetGlobe();
         globe.animate();
     }
 });
