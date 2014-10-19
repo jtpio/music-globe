@@ -122,10 +122,10 @@ function fetchData(mbid, name, rawName) {
 }
 
 function fetchArtists(query) {
-    query = query.trim();
-    if (_.isEmpty(query)) return;
-
     resetGlobe();
+
+    query = query.trim();
+    if (query.length === 0) return;
 
     $('#infos').fadeOut();
     $('#artists').fadeOut();
