@@ -48,6 +48,7 @@ $('#upcoming').click(function () {
 
 function resetGlobe() {
     globe.reset();
+    $('#artist').empty();
     $('#top10').empty().hide();
     $('#past').attr('disabled', true);
     $('#upcoming').attr('disabled', true);
@@ -71,11 +72,12 @@ function fetchData(mbid, name, rawName) {
     $('#artists').fadeOut(200, function () {
         var url = 'http://api.bandsintown.com/artists/' + (rawName ? rawName : 'mbid_' + artistId) + '/events.json?api_version=2.0&app_id=MUSIC_GLOBE&date=' + date;
         $.get(url, {}, function (data) {
-            if (data.errors && data.errors[0]) {
+            if (!data || (data.errors && data.errors[0])) {
                 $('#artists').fadeOut();
                 $('#infos').fadeOut();
                 $('#error').html('Bandsintown: ' + data.errors[0]);
                 $('#error').fadeIn();
+                return;
             }
 
             resetGlobe();
@@ -123,16 +125,15 @@ function fetchArtists(query) {
     query = query.trim();
     if (_.isEmpty(query)) return;
 
+    resetGlobe();
+
     $('#infos').fadeOut();
     $('#artists').fadeOut();
     var url = 'http://musicbrainz.org/ws/2/artist/?query=artist:' + query + '*&fmt=json&limit=15';
     $.get(url, {}, function (data) {
-        var artist = data.artist;
-        var suggest = '';
-        for (var i = 0; i < 10 && i < artist.length; i++) {
-            var a = artist[i];
-            suggest += '<a href="javascript:fetchData(\'' + a.id + '\', \'' + a.name + '\');" class="list-group-item">' + a.name + '</a>';
-        }
+        var suggest = data.artists.slice(0, 10).reduce(function (prev, curr) {
+            return prev + '<a href="javascript:fetchData(\'' + curr.id + '\', \'' + curr.name + '\');" class="list-group-item">' + curr.name + '</a>';
+        }, '');
         $('#infos').show();
         $('#artists').html(suggest).fadeIn();
     });
