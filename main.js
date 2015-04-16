@@ -27,7 +27,7 @@ $('#artistName').keydown(function () {
 });
 
 $('a[href="#raw"]').click(function () {
-    var name = $('artistName').val();
+    var name = $('#artistName').val();
     fetchData(null, name, name);
 });
 
