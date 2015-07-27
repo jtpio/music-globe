@@ -2,7 +2,7 @@
 
 This is a visualization of **artists events locations** on a 3D globe.
 
-Search for an artist or a band to see where they've been. Bar height and color are relative **per artist**: the more often an event happened at a place, the higher the bar is.
+Search for an artist or a band to see where they've been. Bar height and color are relative **per artist**: the more often a concert happened at a place, the higher the bar is.
 
 Both past and upcoming events are displayed.
 
