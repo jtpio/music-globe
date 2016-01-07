@@ -86,7 +86,7 @@ function fetchData(mbid, name, rawName) {
             var cities = {};
             // first pass
             data.forEach(function (d) {
-                var city = d.venue.city;
+                var city = d.formatted_location;
                 cities[city] = cities.hasOwnProperty(city) ? cities[city] + 1 : 1;
             });
 
@@ -106,7 +106,7 @@ function fetchData(mbid, name, rawName) {
 
             var globeDataLL = data.reduce(function (prev, curr) {
                 var venue = curr.venue;
-                return prev.concat([parseFloat(venue.latitude), parseFloat(venue.longitude), cities[venue.city] * scale]);
+                return prev.concat([parseFloat(venue.latitude), parseFloat(venue.longitude), cities[curr.formatted_location] * scale]);
             }, []);
 
             globe.addData(globeDataLL, {format: 'magnitude'});
