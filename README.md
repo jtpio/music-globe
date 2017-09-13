@@ -8,6 +8,8 @@ Both past and upcoming events are displayed.
 
 Artists suggestions are fetched from MusicBrainz and events from Bandsintown, so the artist choice could be limited. Bandsintown is also pretty recent (founded in 2007), "old artists" won't show up in the search.
 
+![Screenshot](https://raw.githubusercontent.com/jtpio/jtpio.github.io/master/res/music-globe/ben_klock.png)
+
 ## Tech
 Powered by:
 
